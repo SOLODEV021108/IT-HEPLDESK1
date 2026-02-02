@@ -608,9 +608,13 @@
         // ================= GITHUB CONFIGURATION =================
         // ⚠️ REPLACE THESE WITH YOUR DETAILS
         // Note: Hardcoding the token exposes it to anyone who views the source code.
-        let GITHUB_TOKEN = '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'; // Paste your token starting with ghp_...
-        let GITHUB_OWNER = 'SOLODEV021108'; // e.g., solodev021108
-        let GITHUB_REPO = 'IT-HEPLDESK1';        // e.g., IT-HEPLDESK
+        // Default values - can be overridden in settings
+        const DEFAULT_GITHUB_OWNER = 'SOLODEV021108'; // e.g., solodev021108
+        const DEFAULT_GITHUB_REPO = 'IT-HEPLDESK1';   // e.g., IT-HEPLDESK
+        
+        let GITHUB_TOKEN = localStorage.getItem('gh_token') || ''; // Token stored in localStorage
+        let GITHUB_OWNER = localStorage.getItem('gh_owner') || DEFAULT_GITHUB_OWNER;
+        let GITHUB_REPO = localStorage.getItem('gh_repo') || DEFAULT_GITHUB_REPO;
 
         // ================= GITHUB API FUNCTIONS =================
         async function getIssues() {
@@ -711,9 +715,9 @@
 
         // ================= SETTINGS FUNCTIONS =================
         function openSettings() {
-            document.getElementById('ghOwner').value = GITHUB_OWNER;
-            document.getElementById('ghRepo').value = GITHUB_REPO;
-            document.getElementById('ghToken').value = GITHUB_TOKEN;
+            document.getElementById('ghOwner').value = GITHUB_OWNER || DEFAULT_GITHUB_OWNER;
+            document.getElementById('ghRepo').value = GITHUB_REPO || DEFAULT_GITHUB_REPO;
+            document.getElementById('ghToken').value = GITHUB_TOKEN || '';
             document.getElementById('settingsModal').classList.add('active');
         }
 
@@ -722,12 +726,12 @@
         }
 
         async function saveSettings() {
-            const owner = document.getElementById('ghOwner').value.trim();
-            const repo = document.getElementById('ghRepo').value.trim();
+            const owner = document.getElementById('ghOwner').value.trim() || DEFAULT_GITHUB_OWNER;
+            const repo = document.getElementById('ghRepo').value.trim() || DEFAULT_GITHUB_REPO;
             const token = document.getElementById('ghToken').value.trim();
 
-            if (!owner || !repo || !token) {
-                alert('⚠️ Please fill in all fields!');
+            if (!token) {
+                alert('⚠️ Please enter your GitHub Personal Access Token!');
                 return;
             }
 
@@ -819,7 +823,7 @@
             if (currentMode === 'guest') {
                 greeting = '👋 Welcome Guest - Submit Your Issue';
                 document.getElementById('reportsSection').style.display = 'none';
-                document.getElementById('settingsBtn').style.display = 'none';
+                document.getElementById('settingsBtn').style.display = 'inline-block';
             } else if (currentMode === 'admin') {
                 greeting = '👨‍💼 Admin Panel - Full Control';
                 document.getElementById('reportsSection').style.display = 'block';
@@ -831,7 +835,7 @@
                 document.getElementById('reportsSection').style.display = 'block';
                 document.getElementById('myReportBtn').style.display = 'block';
                 document.getElementById('adminReportBtn').style.display = 'none';
-                document.getElementById('settingsBtn').style.display = 'none';
+                document.getElementById('settingsBtn').style.display = 'inline-block';
             }
 
             document.getElementById('userGreeting').textContent = greeting;
